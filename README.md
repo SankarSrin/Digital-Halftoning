@@ -6,7 +6,9 @@ Code provided for
 #Bayers Halftone
 #Ulichney Halftone
 
-MATLAB and Python
+For details refer to blog:
+
+https://imageprocessing-sankarsrin.blogspot.com/2016/12/digital-half-toning-ordered-dithering.html
 
 Ref Paper: 
 
