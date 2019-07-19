@@ -5,8 +5,7 @@ Code provided for
 
 #Bayers Halftone
 #Ulichney Halftone
-#floyd-steinberg error diffusion
-
+#floyd-steinberg error diffusion 
 
 
 
