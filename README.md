@@ -4,16 +4,16 @@ The repository contains MATLAB and Python code for the digital halftoning techni
 Code provided for
 
 **MATLAB:**
--Bayers
--Ulichney
--Dot-Diffusion
--Error-Diffusion (floyd steinberg)
--Direct binary search
+- Bayers
+- Ulichney
+- Dot-Diffusion
+- Error-Diffusion (floyd steinberg)
+- Direct binary search
 
 **Python**
--Bayers Halftone
--Ulichney Halftone
--floyd-steinberg error diffusion 
+- Bayers Halftone
+- Ulichney Halftone
+- floyd-steinberg error diffusion 
 
 
 
