@@ -17,4 +17,4 @@ https://imageprocessing-sankarsrin.blogspot.com/2016/12/digital-half-toning-orde
 
 Ref Paper: 
 
-**Guo, Jing Ming, and S. Sankarasrinivasan. "Digital Halftone Database (DHD): A Comprehensive Analysis on Halftone Types." 2018 Asia-Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC). IEEE, 2018.**
+**__Guo, Jing Ming, and S. Sankarasrinivasan. "Digital Halftone Database (DHD): A Comprehensive Analysis on Halftone Types." 2018 Asia-Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC). IEEE, 2018.__**
