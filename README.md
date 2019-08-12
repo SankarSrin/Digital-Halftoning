@@ -6,9 +6,9 @@ Code provided for
 **MATLAB:**
 - Bayers
 - Ulichney
-- Dot-Diffusion
-- Error-Diffusion (floyd steinberg)
-- Direct binary search
+- Dot-Diffusion (dotdiff.m : can perform Knuth and Mese-Vaidhyanathan dot-diffusion)
+- Error-Diffusion (floyd_serp.m  : can perform floyd-steinberg error diffusion, errdiff.m : will be called during exectution)
+- Direct binary search (DBS) (EDBS.m : efficient DBS)
 
 **Python**
 - Bayers Halftone
