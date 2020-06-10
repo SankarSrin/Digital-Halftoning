@@ -17,6 +17,7 @@ Code provided for
 
 
 **The code for Point Process Statistics is also included: 
+The source code is taken from Modern Digital Halftoning: Refer to the software guide for details. 
 
 
 For details refer to blog:
