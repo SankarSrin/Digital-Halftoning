@@ -16,6 +16,8 @@ Code provided for
 - floyd-steinberg error diffusion 
 
 
+**The code for Point Process Statistics is also included 
+
 
 For details refer to blog:
 
