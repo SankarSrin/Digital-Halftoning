@@ -3,4 +3,3 @@ scipy>=1.8
 pillow>=9
 numba>=0.56      # optional but strongly recommended (100x faster loops)
 matplotlib>=3.5  # optional, only for the statistics figure in main.py
-pytest>=7        # optional, to run the tests

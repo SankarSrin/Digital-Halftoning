@@ -36,7 +36,6 @@ g, r = pps.pc(X, 1)                            # pair correlation (also vpc, rsm
 cd "Digital Halftoning/Python"
 pip install -r requirements.txt
 python main.py            # halftones peppers.tif with every method -> ./output
-python -m pytest tests    # 106 tests, incl. output-for-output parity with the MATLAB/C code
 ```
 
 `numba` is optional but makes error diffusion, dot diffusion, DBS and the
