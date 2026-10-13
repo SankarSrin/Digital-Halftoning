@@ -114,7 +114,7 @@ def test_pair_correlation_of_random_pattern_is_flat():
     X = rng.random((128, 128)) < 0.2
     g, r = P.pc(X, 2)
     assert np.all(np.abs(g[1:-1] - 1) < 0.1)
-    assert g[-1] == 0  # pc.c quirk: the last radial bin is never filled (see REVIEW.md)
+    assert g[-1] == 0  # pc.c quirk: the last radial bin is never filled
     g, r = P.vpc(X, (1, 1), 2)
     assert np.all(np.abs(g[1:] - 1) < 0.1)
 

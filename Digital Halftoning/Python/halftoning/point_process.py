@@ -15,7 +15,7 @@ Python ports of the ``Point Process Statistics`` folder:
 =============  ===========================================================
 
 Each function reproduces the corrected C code exactly (same sort order, same
-bin edges, same normalisation); see REVIEW.md for what was corrected.
+bin edges, same normalisation), including the 2026 bug fixes.
 Images are indexed ``X[row, col]`` like MATLAB.
 """
 

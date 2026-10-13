@@ -350,7 +350,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     int m, n;
     unsigned char *input_image;
     double *radial_data, *pair_correlation, max_distance;
-	char cluster_str[64];   /* was [5]: 'cluster' (7 chars) did not fit, see REVIEW.md */
+	char cluster_str[64];   /* was [5]: 'cluster' (7 chars) did not fit */
 
     if (nrhs<2 || nrhs>4)
         mexErrMsgTxt("PC accepts two to four input arguments!");

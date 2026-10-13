@@ -45,11 +45,7 @@ point-process statistics fast.
 **Point Process Statistics** (`Digital Halftoning/Point Process Statistics`):
 the code for Point Process Statistics is also included.
 The source code is taken from Modern Digital Halftoning: refer to the software guide for details.
-Recompile the C files with `mex file.c` (the bundled `.mexw64` binaries predate the fixes in REVIEW.md).
-
-**Code review:** see [REVIEW.md](REVIEW.md) for the bugs found and fixed in the
-MATLAB and C code (2026) and how the Python port was verified.
-
+Recompile the C files with `mex file.c` (the bundled `.mexw64` binaries predate the 2026 bug fixes in the `.c` sources).
 
 For details refer to blog:
 

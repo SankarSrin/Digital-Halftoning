@@ -31,7 +31,7 @@ BAYER_CLUSTERED = np.array([
     [32, 40, 54, 38, 31, 21, 19, 29],
 ]) / 64
 
-# Ulichney 4x4 clustered dot (met=1). Thresholds 0..15/16 (see REVIEW.md).
+# Ulichney 4x4 clustered dot (met=1). Thresholds 0..15/16 (was /15: white never printed fully white).
 ULICHNEY_CLUSTERED_4 = np.array([
     [12, 5, 6, 13],
     [4, 0, 1, 7],

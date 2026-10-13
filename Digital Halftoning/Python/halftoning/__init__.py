@@ -1,7 +1,6 @@
 """Digital halftoning in Python.
 
-Ports of the MATLAB code in this repository (with the fixes described in
-REVIEW.md):
+Ports of the MATLAB code in this repository (with the 2026 bug fixes):
 
 >>> from halftoning import bayers, ulichney, dotdiff, floyd_serp, errdiff, edbs
 >>> from halftoning import point_process as pps
