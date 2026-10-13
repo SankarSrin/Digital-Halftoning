@@ -322,6 +322,11 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	  Shift_Row = (int) mxGetScalar (prhs[3]);
 	  Shift_Col = Shift_Row;
 	} 
+      else if ((Shift_M*Shift_N)==2)   /* Fixed: [DM DN] used to be ignored */
+	{
+	  Shift_Row = (int) mxGetPr(prhs[3])[0];
+	  Shift_Col = (int) mxGetPr(prhs[3])[1];
+	}
       
       if ((Shift_Row*Shift_Col) == 0)
 	{
@@ -329,6 +334,13 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	    Shift_Col = Spat_Win_Dim;
 	}
     }
+
+  /* Fixed: a spectral window smaller than the spatial window overran the
+     Sample_Window buffer. */
+  if (Spec_Win_Dim < Spat_Win_Dim)
+    mexErrMsgTxt ("FM must be at least M (spectral window >= spatial window)");
+  if (Spat_Win_Dim > Image_M || Spat_Win_Dim > Image_N)
+    mexErrMsgTxt ("Spatial window M is larger than the image");
 
   /* Creates the  Output Variable & Assigns Pointer to the output */
   

@@ -151,18 +151,18 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
         unsigned char *input_image;
         double *pair_correlation, *radial_data, *channels;
 	int number_of_dims;
-        const int *dim_array;
+        const mwSize *dim_array;   /* was const int*: wrong on 64-bit builds */
 
         if (nrhs<2 | nrhs>4)
                 mexErrMsgTxt("PC accepts one or two!");
         else if (nlhs>2)
                 mexErrMsgTxt("PC outputs one or two arguments!");
-        else if (!mxIsNumeric(prhs[0]) ||
+        /* Since MATLAB 6.5 an array cannot be both uint8 and logical, so the
+           old test (uint8 AND logical) rejected every input. Accept either. */
+        else if (!(mxIsLogical(prhs[0]) || mxIsUint8(prhs[0])) ||
                   mxIsComplex(prhs[0]) ||
-                  mxIsSparse(prhs[0])  ||
-                 !mxIsUint8(prhs[0])   ||
-		 !mxIsLogical(prhs[0]))
-                mexErrMsgTxt("Input X must be a real matrix of type uint8 (logical)!");
+                  mxIsSparse(prhs[0]))
+                mexErrMsgTxt("Input X must be a real matrix of type logical or uint8!");
       	else if (!mxIsNumeric(prhs[1]) ||
                  mxIsComplex(prhs[1]) ||
                  mxIsSparse(prhs[1])  ||
@@ -195,7 +195,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
                 image_col=dim_array[1];
                 image_chn=dim_array[2];
 	        }
-	input_image=(unsigned char*)mxGetPr(prhs[0]);
+	input_image=(unsigned char*)mxGetData(prhs[0]);
 
 	channels=mxGetPr(prhs[1]);
 	chn_I=(int)channels[0]-1;

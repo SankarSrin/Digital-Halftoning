@@ -145,7 +145,7 @@ void directional_distribution_function(double output_angle[], double angular_dat
                                            (image_row-m) <= outer_radii[r] ||
                                            (image_col-n) <= outer_radii[r]) continue;
                                         j=1;
-                                        while (cost_array[j].cost < outer_radii[r] && j < image_row*image_col){
+                                        while (j < image_row*image_col && cost_array[j].cost < outer_radii[r]){   /* bound checked first */
                                                 if (cost_array[j].cost >= inner_radii[r]){
                                                         md=m+cost_array[j].row;
                                                         nd=n+cost_array[j].col;

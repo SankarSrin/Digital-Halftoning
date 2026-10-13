@@ -1,18 +1,26 @@
 %%%%%%%Function to generate Bayer's Halftone Patterns%%%%%%%%%%
 
-%%   Author: 
+%%   Author:
 %%   Mr. Sankarasrinivasan
 %%   Research Fellow, Multimedia Signal Processing Lab, NTUST, Taiwan
 %%   Advisor: Prof. Jing Ming Guo
 %%   Dated: Apr, 2018
 
 %%Details
-%%Bayers(im,met) im==> input image;
+%%Bayers(im,met) im==> input image (grayscale or RGB, any size);
 %% met=1; Bayers Dispersed Dot && met=2; Bayers Clustered Dot
+%%
+%% Revision (2026): works for any image size (threshold array is tiled and
+%% cropped instead of requiring multiples of 8) and accepts RGB input.
 
 function [HOD]=Bayers(im,met)
-[s1 s2]=size(im);
+if nargin<2, met=1; end
 im=im2double(im);
+if size(im,3)==3
+    im=rgb2gray(im);
+end
+[s1,s2]=size(im);
+
 if (met==1)
 %Bayers Dispersed Dot
 
@@ -39,8 +47,8 @@ DA=[24 10 12 26 35 47 49 37;
 
 end
 
-mask=repmat(DA,s1/8,s2/8);
-H=zeros(s1,s2);
+mask=repmat(DA,ceil(s1/8),ceil(s2/8));
+mask=mask(1:s1,1:s2);
 HOD=im>mask;
 
 end

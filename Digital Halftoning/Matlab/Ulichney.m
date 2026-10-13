@@ -1,29 +1,42 @@
 %%%%%%%Function to generate Ulichney Halftone Patterns%%%%%%%%%%
 
-%%   Author: 
+%%   Author:
 %%   Mr. Sankarasrinivasan
 %%   Research Fellow, Multimedia Signal Processing Lab, NTUST, Taiwan
 %%   Advisor: Prof. Jing Ming Guo
 %%   Dated: Apr, 2018
 
 %met=1 (clustered dot 4x4); met=2 (clustered dot 8x8) met=3 dispersed dot
+%(14x14 void-and-cluster)
+%
+% Revision (2026):
+%  - works for any image size: the threshold array is tiled and cropped
+%    (met=3 no longer resizes the image with imresize, so the output has the
+%    same size as the input).
+%  - met=1 thresholds are now 0..15/16 (were 0..15/15, so a pure-white input
+%    still printed one black dot per 4x4 cell).
+%  - accepts RGB input; errors on an unknown met.
 
 function [HOD]=Ulichney(im,met)
+if nargin<2, met=1; end
 im=im2double(im);
-[s1 s2]=size(im);
+if size(im,3)==3
+    im=rgb2gray(im);
+end
+[s1,s2]=size(im);
 
 
 if(met==1)
-    
+
 od=[12 05 06 13;
     04 00 01 07;
     11 03 02 08;
-    15 10 09 14;]/15;
-    
+    15 10 09 14;]/16;
+
 bs=4;
 
 elseif(met==2)
-    
+
  od=[0.567	0.635	0.608	0.514	0.424	0.365	0.392	0.486
     0.847	0.878	0.910	0.698	0.153	0.122	0.090	0.302
     0.820	0.969	0.941	0.667	0.180	0.031	0.059	0.333
@@ -50,16 +63,13 @@ elseif(met==3)
         174 107 41 143 33 74 1 101 195 15 75 140 109 90;
         32 62 157 98 167 119 179 59 36 130 175 55 0 150;]/196;
     bs=14;
-    [s1, s2]=size(im);
-    r1=rem(s1,bs);
-    r2=rem(s2,bs);
-    s1=s1-r1; s2=s2-r2;
-    im=imresize(im, [s1,s2]);    
-    
+
+else
+    error('Ulichney: met must be 1, 2 or 3');
 end
- 
-mask=repmat(od,s1/bs,s2/bs);
-H=zeros(s1,s2);
+
+mask=repmat(od,ceil(s1/bs),ceil(s2/bs));
+mask=mask(1:s1,1:s2);
 HOD=im>mask;
 
 end

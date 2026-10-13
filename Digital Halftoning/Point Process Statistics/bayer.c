@@ -49,7 +49,8 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 {
 	unsigned char *output_data;
 	double *input_image;
-	int m, n, output_dims[2];
+	int m, n;
+	mwSize output_dims[2];   /* was int[2]: wrong on 64-bit MATLAB/Octave (mwSize is 64-bit) */
 	int image_row, image_col;
 
     /****** Check for errors in user's call to function. ***********************/

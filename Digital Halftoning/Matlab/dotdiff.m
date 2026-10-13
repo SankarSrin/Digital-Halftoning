@@ -1,20 +1,40 @@
 %Function to generate halftoning by Dot Diffusion MEthod
 %Ref- Digital Halftoning by Donald E Knuth 1987
 
-%im-input image
+%im-input image (grayscale or RGB, any size)
 %met 1-MeseVaidhayanath CM 8*8 2-Knuth CM 8*8 else Mese CM 16*16
 
 %Programmed By: Sankarasrinivasan S
 %Multimedia Signal Processing Lab, Dept. of Elec Engg. NTUST
 %Oct 2016
+%
+% Revision (2026):
+%  - The quantisation error is now divided by the total weight of the
+%    neighbours that still receive error (class > current class). The old
+%    code divided by sum(DM(:)) = 1, so part of the error was thrown away and
+%    the output tone was wrong (e.g. 25% gray -> 12-15% ink).
+%    If no neighbour has a higher class, the error is dropped (Knuth's
+%    "baron" case) instead of dividing by zero.
+%  - Knuth class matrix: the entry at row 7, column 8 is 44 (was a duplicate 42).
+%  - Fixed CM1(2:s1+1,2:s1+1) -> CM1(2:s1+1,2:s2+1) (non-square images crashed).
+%  - Any image size (class matrix tiled and cropped); no Image Processing
+%    Toolbox needed (padarray replaced by explicit zero padding).
+%  - Simplified the pixel loop (the old nested while loops visited each pixel
+%    of a class exactly once; this one does the same).
 
 
 function [H]=dotdiff(im,met)
 
+if nargin<2, met=1; end
 im=im2double(im);
+if size(im,3)==3
+    im=rgb2gray(im);
+end
 
-[s1 s2]=size(im);
-im=padarray(im,[1 1],'both');
+[s1,s2]=size(im);
+impad=zeros(s1+2,s2+2);
+impad(2:s1+1,2:s2+1)=im;
+im=impad;
 
 if(met==1)
     
@@ -35,7 +55,7 @@ elseif(met==2)
 				     38 46 54 37 25 17 9 26;
 				     28 14 22 30 35 49 41 33;
 				     20 4 6 11 43 59 57 52;
-				     12 0 3 19 51 63 60 42;
+				     12 0 3 19 51 63 60 44;
 				     24 16 8 27 39 47 55 36;]; %Knuth
                  bs=8; nn=63; 
 else
@@ -63,52 +83,32 @@ end
 
 %Diffusion Matrix
 
-                DM=[1 2 1;
-                    2 0 2;
-                    1 2 1;]/12;
-                
-   CM=repmat(CM,s1/bs,s2/bs);
-   CM1=zeros(s1+2,s2+2)-1;
-   CM1(2:s1+1,2:s1+1)=CM;
-   CM=CM1;
-   H=zeros(s1+2,s2+2);     
-              
-  
-  for ii=0:1:nn
-      [p1,p2]=(find(CM==ii))    ;
-      
-          i1=1;
-          j1=1;
-      
-      for m1=1:1:size(p1,1)   ;
-      
-            while(i1<=size(p1,1));
-            while(j1<=size(p2,1));
-            
-              if(im(p1(i1),p2(j1))>0.5)
-                  H(p1(i1),p2(j1))=1;
-              end
-            
-              qerr=im(p1(i1),p2(j1))-H(p1(i1),p2(j1))    ;
-              cl=CM((p1(i1)-1):(p1(i1)+1),(p2(j1)-1):(p2(j1)+1));
-              k=cl>ii;
-              DM1=(DM.*k);
-              DM1=DM1/sum(DM(:));
-              err=DM1*qerr;
-              im((p1(i1)-1):(p1(i1)+1),(p2(j1)-1):(p2(j1)+1))= im((p1(i1)-1):(p1(i1)+1),(p2(j1)-1):(p2(j1)+1))+err;
-               
-                    i1=i1+1;
-                    j1=j1+1;
-            end
-            end      
-      end
-    
-      
-  end
-  H=H(2:(s1+1),2:(s2+1));
-  
-end
+DM=[1 2 1;
+    2 0 2;
+    1 2 1;];
 
-%   
-%               
-              
+CM=repmat(CM,ceil(s1/bs),ceil(s2/bs));
+CM=CM(1:s1,1:s2);
+CM1=zeros(s1+2,s2+2)-1;          % border gets class -1: never receives error
+CM1(2:s1+1,2:s2+1)=CM;
+CM=CM1;
+H=zeros(s1+2,s2+2);
+
+for ii=0:1:nn
+    [p1,p2]=find(CM==ii);
+    for k=1:numel(p1)
+        r=p1(k); c=p2(k);
+        if(im(r,c)>0.5)
+            H(r,c)=1;
+        end
+        qerr=im(r,c)-H(r,c);
+        w=DM.*(CM(r-1:r+1,c-1:c+1)>ii);   % only not-yet-processed neighbours
+        sw=sum(w(:));
+        if(sw>0)
+            im(r-1:r+1,c-1:c+1)=im(r-1:r+1,c-1:c+1)+(qerr/sw)*w;
+        end
+    end
+end
+H=H(2:(s1+1),2:(s2+1));
+
+end

@@ -168,33 +168,23 @@ int get_all_clusters(unsigned char *input_image, unsigned char pixel_color)
 /********************************************************************************/
 int get_all_pixels(unsigned char *input_image, unsigned char pixel_color)
 {
+	/* Fixed: the old version created a list head from the first pixel and
+	   then appended every pixel again (including the first), so the first
+	   pixel was counted twice. */
 	int m,n, number_of_clusters=0;
-	struct cluster *new_cluster;
+	struct cluster *new_cluster, *last_cluster=NULL;
 
 	for (n=0; n<image_col; n++){
 		for (m=0; m<image_row; m++){
 			if (input_image[m+n*image_row]==pixel_color){
-				cluster_list=(struct cluster*)mxCalloc(1, sizeof(struct cluster));
-                                cluster_list->M_center=(double)m;
-                                cluster_list->N_center=(double)n;
-                                cluster_list->size=0;
-                                cluster_list->next=NULL;
-				new_cluster=cluster_list;
-				number_of_clusters=1;
-				break;
-				}
-			}
-		if (cluster_list!=NULL) break;
-		}
-	for (n=0; n<image_col; n++){
-		for (m=0; m<image_row; m++){
-			if (input_image[m+n*image_row]==pixel_color){
-				new_cluster->next=(struct cluster*)mxCalloc(1, sizeof(struct cluster));
-                                new_cluster->next->M_center=(double)m;
-                                new_cluster->next->N_center=(double)n;
-                                new_cluster->next->size=0;
-                                new_cluster->next->next=NULL;
-				new_cluster=new_cluster->next;
+				new_cluster=(struct cluster*)mxCalloc(1, sizeof(struct cluster));
+                                new_cluster->M_center=(double)m;
+                                new_cluster->N_center=(double)n;
+                                new_cluster->size=0;
+                                new_cluster->next=NULL;
+				if (last_cluster==NULL) cluster_list=new_cluster;
+				else last_cluster->next=new_cluster;
+				last_cluster=new_cluster;
 				number_of_clusters++;
 				}
 			}
@@ -360,7 +350,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     int m, n;
     unsigned char *input_image;
     double *radial_data, *pair_correlation, max_distance;
-	char cluster_str[5];
+	char cluster_str[64];   /* was [5]: 'cluster' (7 chars) did not fit, see REVIEW.md */
 
     if (nrhs<2 || nrhs>4)
         mexErrMsgTxt("PC accepts two to four input arguments!");
@@ -388,7 +378,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 		max_distance=mxGetScalar(prhs[2]);
 		if (image_row<image_col && (image_row/2)<max_distance)
    			num_radial_bins=(int)ceil((double)image_row/(2.0*dR))-1;
-		else if (image_col<image_col && (image_col/2)<max_distance)
+		else if (image_col<=image_row && (image_col/2)<max_distance)   /* was image_col<image_col (always false) */
    			num_radial_bins=(int)ceil((double)image_col/(2.0*dR))-1;
 		else
    			num_radial_bins=(int)ceil((double)max_distance/dR)-1;
@@ -410,11 +400,14 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
 	cluster_list=NULL;
 	num_clusters=0;
     if (nrhs>3){
-        mxGetString(prhs[3], cluster_str, 5);
-        if (cluster_str[0]==99 && cluster_str[1]==108 && cluster_str[2]==117 && cluster_str[3]==115)
+        cluster_str[0]=0;
+        mxGetString(prhs[3], cluster_str, 64);
+        if (cluster_str[0]==99 && cluster_str[1]==108 && cluster_str[2]==117 && cluster_str[3]==115){
     		num_clusters=get_all_clusters(input_image, 1);
 		pair_correlation_function(pair_correlation, radial_data, input_image);
-        return;
+        	return;
+		}
+        /* Fixed: any other string used to return all zeros (empty point list). */
         }
    	num_clusters=get_all_pixels(input_image, 1);
     pair_correlation_function(pair_correlation, radial_data, input_image);

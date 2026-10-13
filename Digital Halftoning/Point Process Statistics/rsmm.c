@@ -97,10 +97,15 @@ void srmm_function(double srmm[], unsigned char input_image[])
 			if (input_image[m+n*image_row]==(unsigned char)1){
 				gray_level=gray_level+1.0;
 				for (r=1; r<image_row*image_col; r++){
+					/* Fixed: also stop at offsets that leave the image on the
+					   top/left side (m+row<0 or n+col<0). Without this, pixels in
+					   the first row/column read outside the image. */
 					if (cost_array[r].row >= m ||
 						cost_array[r].row >= (image_row-m) ||
 						cost_array[r].col >= n ||
-						cost_array[r].col >= (image_col-n)){
+						cost_array[r].col >= (image_col-n) ||
+						m+cost_array[r].row < 0 ||
+						n+cost_array[r].col < 0){
 						break;
 					}
 					if (cost_array[r].cost >= max_distance){
